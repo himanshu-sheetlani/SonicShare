@@ -53,7 +53,7 @@ function App() {
   }, [setRoomId, setRoomState, setUserId]);
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-neutral-900 text-white">
       {roomId ? (
         <Room />
       ) : (
