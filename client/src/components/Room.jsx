@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useStore } from '../store';
 import { socket } from '../socket';
 import { Copy, Disc } from 'lucide-react';

@@ -3,6 +3,7 @@ import { auth, googleProvider } from "../firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { LogOut, Loader, ArrowLeft } from "lucide-react";
 import { useStore } from "../store";
+import SongUploadForm from "../components/SongUploadForm";
 
 export default function Admin() {
   const { setCurrentPage, setRoomId } = useStore();
@@ -93,42 +94,46 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-neutral-950 text-white p-4 md:p-8">
       <button
         onClick={() => {
           setRoomId(null);
           setCurrentPage('landing');
         }}
-        className="absolute top-4 left-4 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white"
+        className="mb-8 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white inline-flex items-center gap-2"
         title="Back to Home"
       >
         <ArrowLeft className="w-5 h-5" />
+        Back
       </button>
 
-      <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-8 shadow-2xl text-center">
-        <div className="mb-6">
-          {user.photoURL && (
-            <img
-              src={user.photoURL}
-              alt={user.displayName}
-              className="w-16 h-16 rounded-full mx-auto mb-4"
-            />
-          )}
-          <h1 className="text-2xl font-bold">{user.displayName}</h1>
-          <p className="text-neutral-400 text-sm">{user.email}</p>
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-12 pb-6 border-b border-neutral-800">
+          <div className="flex items-center gap-4">
+            {user.photoURL && (
+              <img
+                src={user.photoURL}
+                alt={user.displayName}
+                className="w-12 h-12 rounded-full"
+              />
+            )}
+            <div>
+              <h1 className="text-3xl font-bold">{user.displayName}</h1>
+              <p className="text-neutral-400 text-sm">{user.email}</p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
         </div>
 
-        <p className="text-neutral-400 mb-8">
-          Welcome to the admin panel.
-        </p>
-
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          Sign out
-        </button>
+        {/* Upload Form */}
+        <SongUploadForm />
       </div>
     </div>
   );
