@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { socket } from '../socket';
-import { Music, Users, ArrowRight, PlayCircle, Sparkles, Radio, Share2 } from 'lucide-react';
+import { Music, Users, ArrowRight, PlayCircle, Sparkles, Radio, Share2, Lock } from 'lucide-react';
+import { useStore } from '../store';
 
 export function LandingPage({ error }) {
   const [inputRoomId, setInputRoomId] = useState('');
+  const { setCurrentPage } = useStore();
 
   const handleCreate = () => {
     socket.emit('create-room');
@@ -115,9 +117,16 @@ export function LandingPage({ error }) {
 
             {/* Footer */}
             <div className="mt-8 pt-6 border-t border-neutral-800 text-center">
-                 <p className="text-xs text-neutral-600">
+                 <p className="text-xs text-neutral-600 mb-4">
                     Sync music • Vote tracks • Audio visualization
                 </p>
+                <button 
+                    onClick={() => setCurrentPage('admin')}
+                    className="text-xs text-neutral-500 hover:text-indigo-400 transition-colors flex items-center justify-center gap-1 mx-auto"
+                >
+                    <Lock size={12} />
+                    Admin Panel
+                </button>
             </div>
         </div>
       </div>
