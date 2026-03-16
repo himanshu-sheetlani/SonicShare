@@ -5,18 +5,28 @@ import { LogOut, Loader, ArrowLeft } from "lucide-react";
 import { useStore } from "../store";
 import SongUploadForm from "../components/SongUploadForm";
 
+const ALLOWED_ADMIN_EMAILS = import.meta.env.VITE_ALLOWED_ADMIN_EMAILS
+
 export default function Admin() {
   const { setCurrentPage, setRoomId } = useStore();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
       if (currentUser) {
-        setCurrentPage('admin');
+        const isAllowed = ALLOWED_ADMIN_EMAILS.includes(currentUser.email);
+        setIsAuthorized(isAllowed);
+        setUser(currentUser);
+        if (isAllowed) {
+          setCurrentPage('admin');
+        }
+      } else {
+        setUser(null);
+        setIsAuthorized(false);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, [setCurrentPage]);
@@ -88,6 +98,49 @@ export default function Admin() {
             </svg>
             Sign in with Google
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center p-4">
+        <button
+          onClick={() => {
+            setRoomId(null);
+            setCurrentPage('landing');
+          }}
+          className="absolute top-4 left-4 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white"
+          title="Back to Home"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="max-w-md w-full bg-neutral-900 border border-red-800 rounded-2xl p-8 shadow-2xl text-center">
+          <h1 className="text-2xl font-bold mb-2 text-red-400">Access Denied</h1>
+          <p className="text-neutral-400 mb-2">
+            Your email is not authorized to access the admin panel.
+          </p>
+          <p className="text-neutral-500 text-sm mb-8">
+            Logged in as: <span className="font-semibold">{user?.email}</span>
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={handleLogout}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+            >
+              Try Another Email
+            </button>
+            <button
+              onClick={() => {
+                setRoomId(null);
+                setCurrentPage('landing');
+              }}
+              className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+            >
+              Go Back
+            </button>
+          </div>
         </div>
       </div>
     );
