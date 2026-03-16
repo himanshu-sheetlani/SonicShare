@@ -8,7 +8,17 @@ export function Room() {
     const { roomId, roomState } = useStore();
     
     return (
-        <div className="w-full max-w-[100%] xl:max-w-[1800px] flex flex-col lg:flex-row gap-4 md:gap-6 p-4 md:p-6 min-h-[calc(100vh-2rem)]">
+        <div className="w-full flex flex-col min-h-screen bg-neutral-950">
+            {/* Header with Logo */}
+            <div className="px-4 md:px-6 py-4 md:py-5 border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-sm">
+                <div className="flex items-center gap-3 max-w-[1800px] mx-auto">
+                    <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-8 md:h-10 object-contain" />
+                    <span className="text-lg md:text-xl font-bold text-white">SonicShare</span>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-2 w-full max-w-[100%] xl:max-w-[1800px] mx-auto flex flex-col lg:flex-row gap-4 md:gap-6 p-4 md:p-6 min-h-[calc(100vh-5rem)]">
             {/* Left Panel: Player & Current Song */}
             <div className="flex-none max-h-[90vh] lg:w-[40%] xl:w-[35%] bg-neutral-800 rounded-3xl p-6 md:p-8 border border-neutral-700 flex flex-col gap-6 shadow-2xl relative overflow-hidden">
                 {/* Background Glow */}
@@ -96,6 +106,7 @@ export function Room() {
                 <div className="bg-neutral-800 rounded-3xl p-6 border border-neutral-700 flex-grow-[1] flex-shrink-0 flex flex-col shadow-xl min-h-[300px]">
                     <SongsList />
                 </div>
+            </div>
             </div>
         </div>
     );

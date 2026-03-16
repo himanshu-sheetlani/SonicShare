@@ -28,14 +28,9 @@ export function LandingPage({ error }) {
 
       {/* Left Section: Hero / Branding (Desktop only, or stacked on mobile) */}
       <div className="relative z-10 w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 lg:p-24 text-center md:text-left">
-        <div className="inline-flex items-center justify-center md:justify-start gap-2 mb-6">
-            <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-neutral-900 p-3 rounded-full border border-neutral-700">
-                    <Music size={32} className="text-white transform group-hover:scale-110 transition-transform duration-300" />
-                </div>
-            </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400 tracking-tight">SonicShare</span>
+        <div className="inline-flex items-center justify-center md:justify-start gap-3 mb-6">
+            <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-12 md:h-14 object-contain" />
+            <span className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400 tracking-tight">SonicShare</span>
         </div>
 
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tighter mb-6 leading-[1.1]">

@@ -186,27 +186,7 @@ export default function SongUploadForm({ onUploadSuccess }) {
                         <Loader className="w-4 h-4 text-blue-400 animate-spin" />
                       )}
                       {uploadProgress[index] === "success" && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveFile(index)}
-                            disabled={uploading}
-                            className="p-1 text-neutral-400 hover:text-red-400 hover:bg-neutral-900 rounded transition-colors disabled:opacity-50"
-                            title="Remove"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setEditingSongIndex(index)}
-                            disabled={uploading}
-                            className="p-1 text-neutral-400 hover:text-blue-400 hover:bg-neutral-900 rounded transition-colors disabled:opacity-50"
-                            title="Edit metadata"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                        </>
+                        <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
                       )}
                       {uploadProgress[index] === "error" && (
                         <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
@@ -258,28 +238,30 @@ export default function SongUploadForm({ onUploadSuccess }) {
         )}
 
         {/* Upload Button */}
-        <button
-          type="submit"
-          disabled={uploading || files.length === 0}
-          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
-        >
-          {uploading ? (
-            <>
-              <Loader className="w-5 h-5 animate-spin" />
-              Uploading{" "}
-              {
-                Object.values(uploadProgress).filter((p) => p === "uploading")
-                  .length
-              }
-              /{files.length}...
-            </>
-          ) : (
-            <>
-              <Upload className="w-5 h-5" />
-              Upload {files.length} File{files.length !== 1 ? "s" : ""}
-            </>
-          )}
-        </button>
+        {files.length > 0 && files.some((_, i) => uploadProgress[i] !== "success") && (
+          <button
+n            type="submit"
+            disabled={uploading || files.length === 0}
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+          >
+            {uploading ? (
+              <>
+                <Loader className="w-5 h-5 animate-spin" />
+                Uploading{" "}
+                {
+                  Object.values(uploadProgress).filter((p) => p === "uploading")
+                    .length
+                }
+                /{files.length}...
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5" />
+                Upload {files.length} File{files.length !== 1 ? "s" : ""}
+              </>
+            )}
+          </button>
+        )}
       </form>
 
       {/* Edit Modal for uploaded song */}
