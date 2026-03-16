@@ -155,6 +155,31 @@ exports.getSongsFromFirestore = async (req, res) => {
   }
 };
 
+// Get a specific song by ID from Firestore
+exports.getSongById = async (req, res) => {
+  try {
+    const { songId } = req.params;
+
+    if (!songId) {
+      return res.status(400).json({ error: "Song ID is required" });
+    }
+
+    const songDoc = await db.collection("songs").doc(songId).get();
+
+    if (!songDoc.exists) {
+      return res.status(404).json({ error: "Song not found" });
+    }
+
+    res.json({
+      id: songDoc.id,
+      ...songDoc.data(),
+    });
+  } catch (error) {
+    console.error("Error fetching song:", error);
+    res.status(500).json({ error: "Failed to fetch song" });
+  }
+};
+
 // Delete song from Firestore and Cloudinary
 exports.deleteSong = async (req, res) => {
   try {

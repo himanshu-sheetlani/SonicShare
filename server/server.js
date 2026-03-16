@@ -6,7 +6,7 @@ const cors = require("cors");
 const path = require("path");
 const multer = require("multer");
 const socketHandler = require("./src/controllers/socket.controller");
-const { uploadSong, getSongsFromFirestore, deleteSong } = require("./src/controllers/upload.controller");
+const { uploadSong, getSongsFromFirestore, deleteSong, getSongById } = require("./src/controllers/upload.controller");
 
 const app = express();
 app.use(cors());
@@ -19,26 +19,18 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
 });
 
-const { getSongs, playSong } = require("./src/controllers/songs.controller");
-
 app.get("/", (req, res) => {
   res.send("Backend is working.");
 });
-
-// Serve local downloaded songs
-app.use("/songs", express.static(path.join(__dirname, "public/songs")));
-
-// Get all songs from public/songs folder
-app.get("/api/songs", getSongs);
-
-// Play specific song from public/songs folder
-app.get("/api/songs/:fileName", playSong);
 
 // Upload song to Firebase Cloud Storage
 app.post("/api/upload", upload.single("file"), uploadSong);
 
 // Get all songs from Firestore
 app.get("/api/firestore-songs", getSongsFromFirestore);
+
+// Get specific song from Firestore
+app.get("/api/firestore-songs/:songId", getSongById);
 
 // Delete song from Firestore and Cloud Storage
 app.delete("/api/songs/:songId", deleteSong);

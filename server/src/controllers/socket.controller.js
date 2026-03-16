@@ -177,84 +177,43 @@ module.exports = (io) => {
     // --- Helper: Get Random Song ---
     async function getRandomSong() {
       try {
-        const path = require("path");
-        const fs = require("fs");
-        const jsmediatags = require("jsmediatags");
+        const roomManager = require("../services/roomManager");
+        const { db } = require("../utils/firebase");
         
-        const songsDir = path.join(__dirname, "../../public/songs");
+        const snapshot = await db.collection("songs").get();
         
-        if (!fs.existsSync(songsDir)) {
-          console.warn("Songs directory does not exist:", songsDir);
+        if (snapshot.empty) {
+          console.warn("No songs found in Firestore");
           return null;
         }
 
-        const files = fs.readdirSync(songsDir);
-        const audioExtensions = [".mp3", ".wav", ".flac", ".m4a"];
-        const audioFiles = files.filter((file) => {
-          const ext = path.extname(file).toLowerCase();
-          return audioExtensions.includes(ext);
-        });
-
-        if (audioFiles.length === 0) {
-          console.warn("No audio files found in songs directory");
-          return null;
-        }
-
-        const randomFileName = audioFiles[Math.floor(Math.random() * audioFiles.length)];
-        const filePath = path.join(songsDir, randomFileName);
-        
-        return new Promise((resolve) => {
-          jsmediatags.read(filePath, {
-            onSuccess: (tag) => {
-              const tags = tag.tags;
-              let albumArt = null;
-
-              if (tags.picture) {
-                try {
-                  const picture = tags.picture;
-                  const base64String = btoa(
-                    String.fromCharCode.apply(null, picture.data)
-                  );
-                  albumArt = `data:${picture.format};base64,${base64String}`;
-                } catch (err) {
-                  console.warn(`Error processing album art:`, err.message);
-                }
-              }
-
-              const songObj = {
-                id: randomFileName,
-                fileName: randomFileName,
-                title: tags.title || randomFileName.replace(/\.[^/.]+$/, ""),
-                artist: tags.artist || "Unknown Artist",
-                album: tags.album || "Unknown Album",
-                albumArt: albumArt,
-                duration: tags.length || 0,
-                url: `/songs/${randomFileName}`,
-                streamUrl: `/songs/${randomFileName}`,
-              };
-              
-              console.log("Random song selected:", songObj.title, "URL:", songObj.streamUrl);
-              resolve(songObj);
-            },
-            onError: (error) => {
-              console.warn("Error reading tags for random song:", error.message);
-              const songObj = {
-                id: randomFileName,
-                fileName: randomFileName,
-                title: randomFileName.replace(/\.[^/.]+$/, ""),
-                artist: "Unknown Artist",
-                album: "Unknown Album",
-                albumArt: null,
-                duration: 0,
-                url: `/songs/${randomFileName}`,
-                streamUrl: `/songs/${randomFileName}`,
-              };
-              
-              console.log("Random song (no metadata):", songObj.title, "URL:", songObj.streamUrl);
-              resolve(songObj);
-            },
+        const songs = [];
+        snapshot.forEach((doc) => {
+          songs.push({
+            id: doc.id,
+            ...doc.data(),
           });
         });
+
+        if (songs.length === 0) {
+          console.warn("No songs available in database");
+          return null;
+        }
+
+        const randomSong = songs[Math.floor(Math.random() * songs.length)];
+        
+        const songObj = {
+          id: randomSong.id,
+          title: randomSong.title || "Unknown Title",
+          artist: randomSong.artist || "Unknown Artist",
+          album: randomSong.album || "Unknown Album",
+          albumArt: randomSong.albumArt,
+          duration: randomSong.duration || 0,
+          streamUrl: randomSong.cloudinaryUrl,
+        };
+        
+        console.log("Random song selected:", songObj.title, "URL:", songObj.streamUrl);
+        return songObj;
       } catch (error) {
         console.error("Error getting random song:", error);
         return null;

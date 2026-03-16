@@ -53,21 +53,7 @@ export function Player() {
           decodeURIComponent(roomState.currentSong.streamUrl) &&
         audio.src !== roomState.currentSong.streamUrl
       ) {
-        console.log(
-          "Player: Setting new audio src:",
-          roomState.currentSong.streamUrl,
-        );
         audio.src = roomState.currentSong.streamUrl;
-        audio.load();
-      }
-    } else if (roomState.currentSong?.url) {
-      // Fallback to url property if streamUrl doesn't exist
-      if (audio.src !== roomState.currentSong.url) {
-        console.log(
-          "Player: Using fallback url:",
-          roomState.currentSong.url,
-        );
-        audio.src = roomState.currentSong.url;
         audio.load();
       }
     } else {

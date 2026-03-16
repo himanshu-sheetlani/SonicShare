@@ -17,14 +17,14 @@ export function SongsList() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/songs`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/firestore-songs`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch songs');
       }
       
       const data = await response.json();
-      setSongs(data.songs || []);
+      setSongs(Array.isArray(data) ? data : data.songs || []);
     } catch (err) {
       console.error('Error fetching songs:', err);
       setError(err.message);
@@ -34,12 +34,11 @@ export function SongsList() {
   };
 
   const addSongToPlaylist = (song) => {
-    const songUrl = song.url.startsWith('http') ? song.url : `${import.meta.env.VITE_BACKEND_URL}${song.url}`;
     const songData = {
       id: song.id,
       title: song.title,
       artist: song.artist,
-      streamUrl: songUrl,
+      streamUrl: song.cloudinaryUrl || song.streamUrl,
       duration: song.duration || 0,
       albumArt: song.albumArt,
     };
