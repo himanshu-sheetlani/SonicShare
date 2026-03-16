@@ -150,6 +150,28 @@ module.exports = (io) => {
       }
     });
 
+    socket.on("intent:play-now", async ({ roomId, song }) => {
+      const room = roomManager.getRoom(roomId);
+      if (!room) {
+        console.log(`Room ${roomId} not found for play-now`);
+        return;
+      }
+
+      // If there's a current song, add it to the beginning of the playlist
+      if (room.state.currentSong) {
+        room.state.playlist.unshift(room.state.currentSong);
+      }
+
+      // Set the requested song as current and start playing
+      room.state.currentSong = song;
+      room.state.playbackState = "playing";
+      room.state.baseTimestamp = 0;
+      room.state.lastSyncTime = Date.now() + 500; // Buffer for client sync
+
+      console.log("Playing song immediately:", song.title);
+      io.to(roomId).emit("room-state", room);
+    });
+
     socket.on("intent:skip", async ({ roomId, direction = "next" }) => {
       const room = roomManager.getRoom(roomId);
       if (!room) return;

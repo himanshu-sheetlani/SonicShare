@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Music, Loader, AlertCircle } from 'lucide-react';
+import { Music, Loader, AlertCircle, Play } from 'lucide-react';
 import { socket } from '../socket';
 import { useStore } from '../store';
 
@@ -46,6 +46,19 @@ export function SongsList() {
     socket.emit('intent:add-song', { roomId, song: songData });
   };
 
+  const playNow = (song) => {
+    const songData = {
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      streamUrl: song.cloudinaryUrl || song.streamUrl,
+      duration: song.duration || 0,
+      albumArt: song.albumArt,
+    };
+    
+    socket.emit('intent:play-now', { roomId, song: songData });
+  };
+
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -88,7 +101,20 @@ export function SongsList() {
               className="flex items-center gap-4 p-3 hover:bg-neutral-700/50 rounded-xl transition-all group border border-transparent hover:border-neutral-600/50 cursor-pointer"
               onClick={() => addSongToPlaylist(song)}
             >
-              <span className="text-neutral-500 text-sm w-6 text-center font-mono font-medium group-hover:text-indigo-400">
+              {/* Play Button - Hidden by default, shown on hover */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playNow(song);
+                }}
+                className="hidden group-hover:block w-6 h-6 flex items-center justify-center text-indigo-400 hover:text-indigo-300 transition-colors flex-shrink-0"
+                title="Play Now"
+              >
+                <Play size={18} fill="currentColor" />
+              </button>
+
+              {/* Number - Shown by default, hidden on hover */}
+              <span className="group-hover:hidden text-neutral-500 text-sm w-6 text-center font-mono font-medium">
                 {idx + 1}
               </span>
 
@@ -112,16 +138,6 @@ export function SongsList() {
                 <p className="font-semibold truncate text-neutral-200 text-base">{song.title}</p>
                 <p className="text-sm text-neutral-400 truncate">{song.artist}</p>
               </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addSongToPlaylist(song);
-                }}
-                className="opacity-0 group-hover:opacity-100 px-3 py-1 text-sm text-white bg-indigo-600 hover:bg-indigo-500 rounded transition-all"
-              >
-                Add
-              </button>
             </div>
           ))
         ) : (
