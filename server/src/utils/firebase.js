@@ -19,7 +19,7 @@ try {
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket: "sonicshare-76500.appspot.com",
+    storageBucket: process.env.storage_bucket,
   });
 
   console.log("Firebase Admin credentials loaded successfully.");
