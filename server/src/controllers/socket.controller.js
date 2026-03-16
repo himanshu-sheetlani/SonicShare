@@ -28,7 +28,6 @@ module.exports = (io) => {
 
     // --- Playback Sync ---
     socket.on("intent:play", ({ roomId, timestamp }) => {
-      console.log(`Received intent:play for room ${roomId} at ${timestamp}`);
       const room = roomManager.getRoom(roomId);
       if (!room) return;
 
@@ -151,12 +150,12 @@ module.exports = (io) => {
       }
     });
 
-    socket.on("intent:skip", async ({ roomId }) => {
+    socket.on("intent:skip", async ({ roomId, direction = "next" }) => {
       const room = roomManager.getRoom(roomId);
       if (!room) return;
 
-      // Logic to move next song from playlist to current
-      await playNextSong(room, roomId);
+      // Logic to move next/previous song from playlist to current
+      await playNextSong(room, roomId, direction);
     });
 
     socket.on("intent:song-ended", async ({ roomId }) => {
@@ -164,7 +163,7 @@ module.exports = (io) => {
       if (!room) return;
 
       // Logic similar to skip, but maybe different scoring
-      await playNextSong(room, roomId);
+      await playNextSong(room, roomId, "next");
     });
 
     socket.on("intent:remove-song", ({ roomId, songId }) => {
@@ -175,24 +174,175 @@ module.exports = (io) => {
       io.to(roomId).emit("playlist-update", room.state.playlist);
     });
 
+    // --- Helper: Get Random Song ---
+    async function getRandomSong() {
+      try {
+        const path = require("path");
+        const fs = require("fs");
+        const jsmediatags = require("jsmediatags");
+        
+        const songsDir = path.join(__dirname, "../../public/songs");
+        
+        if (!fs.existsSync(songsDir)) {
+          console.warn("Songs directory does not exist:", songsDir);
+          return null;
+        }
+
+        const files = fs.readdirSync(songsDir);
+        const audioExtensions = [".mp3", ".wav", ".flac", ".m4a"];
+        const audioFiles = files.filter((file) => {
+          const ext = path.extname(file).toLowerCase();
+          return audioExtensions.includes(ext);
+        });
+
+        if (audioFiles.length === 0) {
+          console.warn("No audio files found in songs directory");
+          return null;
+        }
+
+        const randomFileName = audioFiles[Math.floor(Math.random() * audioFiles.length)];
+        const filePath = path.join(songsDir, randomFileName);
+        
+        return new Promise((resolve) => {
+          jsmediatags.read(filePath, {
+            onSuccess: (tag) => {
+              const tags = tag.tags;
+              let albumArt = null;
+
+              if (tags.picture) {
+                try {
+                  const picture = tags.picture;
+                  const base64String = btoa(
+                    String.fromCharCode.apply(null, picture.data)
+                  );
+                  albumArt = `data:${picture.format};base64,${base64String}`;
+                } catch (err) {
+                  console.warn(`Error processing album art:`, err.message);
+                }
+              }
+
+              const songObj = {
+                id: randomFileName,
+                fileName: randomFileName,
+                title: tags.title || randomFileName.replace(/\.[^/.]+$/, ""),
+                artist: tags.artist || "Unknown Artist",
+                album: tags.album || "Unknown Album",
+                albumArt: albumArt,
+                duration: tags.length || 0,
+                url: `/songs/${randomFileName}`,
+                streamUrl: `/songs/${randomFileName}`,
+              };
+              
+              console.log("Random song selected:", songObj.title, "URL:", songObj.streamUrl);
+              resolve(songObj);
+            },
+            onError: (error) => {
+              console.warn("Error reading tags for random song:", error.message);
+              const songObj = {
+                id: randomFileName,
+                fileName: randomFileName,
+                title: randomFileName.replace(/\.[^/.]+$/, ""),
+                artist: "Unknown Artist",
+                album: "Unknown Album",
+                albumArt: null,
+                duration: 0,
+                url: `/songs/${randomFileName}`,
+                streamUrl: `/songs/${randomFileName}`,
+              };
+              
+              console.log("Random song (no metadata):", songObj.title, "URL:", songObj.streamUrl);
+              resolve(songObj);
+            },
+          });
+        });
+      } catch (error) {
+        console.error("Error getting random song:", error);
+        return null;
+      }
+    }
+
     // --- Helper: Play Next ---
-    async function playNextSong(room, roomId) {
-      if (room.state.playlist.length > 0) {
-        const nextSong = room.state.playlist.shift();
-        room.state.currentSong = nextSong;
-        room.state.playbackState = "playing"; // Auto-play next
-        room.state.baseTimestamp = 0;
+    async function playNextSong(room, roomId, direction = "next") {
+      if (direction === "previous") {
+        // Go back to previous song
+        if (room.state.playHistory.length > 0) {
+          // Put current song back at start of playlist
+          if (room.state.currentSong) {
+            room.state.playlist.unshift(room.state.currentSong);
+          }
+          
+          // Get last song from history
+          room.state.currentSong = room.state.playHistory.pop();
+          room.state.playbackState = "playing";
+          room.state.baseTimestamp = 0;
 
-        const NOW = Date.now();
-        const BUFFER = 500;
-        room.state.lastSyncTime = NOW + BUFFER;
+          const NOW = Date.now();
+          const BUFFER = 500;
+          room.state.lastSyncTime = NOW + BUFFER;
 
-        io.to(roomId).emit("room-state", room); // Full update since currentSong changed
+          console.log("Playing previous song:", room.state.currentSong.title, "streamUrl:", room.state.currentSong.streamUrl);
+          io.to(roomId).emit("room-state", room);
+        } else {
+          // No history, restart current song
+          if (room.state.currentSong) {
+            room.state.baseTimestamp = 0;
+            room.state.playbackState = "playing";
+
+            const NOW = Date.now();
+            const BUFFER = 500;
+            room.state.lastSyncTime = NOW + BUFFER;
+
+            console.log("Restarting current song:", room.state.currentSong.title);
+            io.to(roomId).emit("sync-update", {
+              playbackState: "playing",
+              baseTimestamp: 0,
+              playAt: room.state.lastSyncTime,
+            });
+          }
+        }
       } else {
-        // Playlist empty
-        room.state.currentSong = null;
-        room.state.playbackState = "paused";
-        io.to(roomId).emit("room-state", room); // Stop
+        // Play next song
+        // Add current song to history before moving to next
+        if (room.state.currentSong) {
+          room.state.playHistory.push(room.state.currentSong);
+        }
+
+        if (room.state.playlist.length > 0) {
+          const nextSong = room.state.playlist.shift();
+          room.state.currentSong = nextSong;
+          room.state.playbackState = "playing";
+          room.state.baseTimestamp = 0;
+
+          const NOW = Date.now();
+          const BUFFER = 500;
+          room.state.lastSyncTime = NOW + BUFFER;
+
+          console.log("Playing next song from queue:", nextSong.title, "streamUrl:", nextSong.streamUrl);
+          io.to(roomId).emit("room-state", room);
+        } else {
+          // Playlist empty - play random song
+          console.log(`Playlist empty for room ${roomId}, fetching random song...`);
+          const randomSong = await getRandomSong();
+          
+          if (randomSong) {
+            room.state.currentSong = randomSong;
+            room.state.playbackState = "playing";
+            room.state.baseTimestamp = 0;
+
+            const NOW = Date.now();
+            const BUFFER = 500;
+            room.state.lastSyncTime = NOW + BUFFER;
+
+            console.log(`Playing random song in room ${roomId}:`, randomSong.title, "streamUrl:", randomSong.streamUrl);
+            io.to(roomId).emit("room-state", room);
+          } else {
+            // No songs available
+            console.log(`No songs available for room ${roomId}`);
+            room.state.currentSong = null;
+            room.state.playbackState = "paused";
+            io.to(roomId).emit("room-state", room);
+          }
+        }
       }
     }
 

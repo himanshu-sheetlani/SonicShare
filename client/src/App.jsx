@@ -21,7 +21,16 @@ function App() {
     }
     
     function onRoomState(room) {
-       setRoomState(room.state || room);
+       const stateToSet = room.state || room;
+       
+       // Ensure streamUrl is a full URL
+       if (stateToSet.currentSong && stateToSet.currentSong.streamUrl) {
+         if (!stateToSet.currentSong.streamUrl.startsWith('http')) {
+           stateToSet.currentSong.streamUrl = `${import.meta.env.VITE_BACKEND_URL}${stateToSet.currentSong.streamUrl}`;
+         }
+       }
+       
+       setRoomState(stateToSet);
     }
 
     function onConnectError(err) {
@@ -34,7 +43,16 @@ function App() {
     }
 
     function onPlaylistUpdate(playlist) {
-      setRoomState(prev => prev ? { ...prev, playlist } : null);
+      const updatedPlaylist = playlist.map(song => {
+        if (song.streamUrl && !song.streamUrl.startsWith('http')) {
+          return {
+            ...song,
+            streamUrl: `${import.meta.env.VITE_BACKEND_URL}${song.streamUrl}`
+          };
+        }
+        return song;
+      });
+      setRoomState(prev => prev ? { ...prev, playlist: updatedPlaylist } : null);
     }
 
     function onSyncUpdate(update) {

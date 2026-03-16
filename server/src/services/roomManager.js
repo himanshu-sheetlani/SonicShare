@@ -15,6 +15,7 @@ class RoomManager {
                 baseTimestamp: 0,
                 lastSyncTime: Date.now(),
                 playlist: [],
+                playHistory: [],
                 roomPreferences: {
                     genreScores: {},
                     artistScores: {}

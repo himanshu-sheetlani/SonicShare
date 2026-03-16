@@ -60,6 +60,16 @@ export function Player() {
         audio.src = roomState.currentSong.streamUrl;
         audio.load();
       }
+    } else if (roomState.currentSong?.url) {
+      // Fallback to url property if streamUrl doesn't exist
+      if (audio.src !== roomState.currentSong.url) {
+        console.log(
+          "Player: Using fallback url:",
+          roomState.currentSong.url,
+        );
+        audio.src = roomState.currentSong.url;
+        audio.load();
+      }
     } else {
       if (audio.src) {
         audio.pause();
@@ -176,8 +186,8 @@ export function Player() {
     }
   };
 
-  const skip = () => {
-    socket.emit("intent:skip", { roomId });
+  const skip = (direction = "next") => {
+    socket.emit("intent:skip", { roomId, direction });
   };
 
   const handleSeek = (e) => {
@@ -283,7 +293,7 @@ export function Player() {
         {/* Center Controls */}
         <div className="flex items-center justify-center gap-8 flex-grow">
           <button
-            onClick={skip}
+            onClick={() => skip("previous")}
             disabled={!roomState?.currentSong}
             className="p-2 text-neutral-400 hover:text-indigo-400 transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
             title="Previous"
@@ -304,7 +314,7 @@ export function Player() {
           </button>
 
           <button
-            onClick={skip}
+            onClick={() => skip("next")}
             disabled={!roomState?.currentSong}
             className="p-2 text-neutral-400 hover:text-indigo-400 transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
             title="Next"
