@@ -94,46 +94,60 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white p-4 md:p-8">
-      <button
-        onClick={() => {
-          setRoomId(null);
-          setCurrentPage('landing');
-        }}
-        className="mb-8 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white inline-flex items-center gap-2"
-        title="Back to Home"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Back
-      </button>
-
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-12 pb-6 border-b border-neutral-800">
-          <div className="flex items-center gap-4">
-            {user.photoURL && (
-              <img
-                src={user.photoURL}
-                alt={user.displayName}
-                className="w-12 h-12 rounded-full"
-              />
-            )}
-            <div>
-              <h1 className="text-3xl font-bold">{user.displayName}</h1>
-              <p className="text-neutral-400 text-sm">{user.email}</p>
-            </div>
+    <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
+      {/* Header with Logo */}
+      <div className="px-4 md:px-6 py-4 md:py-5 border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-sm">
+        <div className="flex items-center justify-between max-w-[1800px] mx-auto">
+          <div className="flex items-center gap-3">
+            <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-8 md:h-10 object-contain" />
+            <span className="text-lg md:text-xl font-bold text-white">SonicShare Admin</span>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-lg transition-colors border border-red-500/20"
+            title="Logout"
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
+            <LogOut className="w-5 h-5" />
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </div>
+      </div>
 
-        {/* Upload Form */}
-        <SongUploadForm />
+      {/* Main Content */}
+      <div className="flex-1 p-4 md:p-8">
+        <button
+          onClick={() => {
+            setRoomId(null);
+            setCurrentPage('landing');
+          }}
+          className="mb-8 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white inline-flex items-center gap-2"
+          title="Back to Home"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back
+        </button>
+
+        <div className="max-w-3xl mx-auto">
+          {/* User Info */}
+          <div className="flex items-center justify-between mb-12 pb-6 border-b border-neutral-800">
+            <div className="flex items-center gap-4">
+              {user.photoURL && (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="w-12 h-12 rounded-full"
+                />
+              )}
+              <div>
+                <h1 className="text-3xl font-bold">{user.displayName}</h1>
+                <p className="text-neutral-400 text-sm">{user.email}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Upload Form */}
+          <SongUploadForm />
+        </div>
       </div>
     </div>
   );
