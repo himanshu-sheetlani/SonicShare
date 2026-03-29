@@ -6,7 +6,7 @@ import { useStore } from './store'
 import { socket } from './socket'
 
 function App() {
-  const { roomId, setRoomId, setRoomState, setUserId, currentPage } = useStore()
+  const { roomId, setRoomId, setRoomState, setUserId, currentPage, resetRoom } = useStore()
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -25,12 +25,14 @@ function App() {
        setRoomState(stateToSet);
     }
 
-    function onConnectError(err) {
-       setError("Connection failed: " + err.message);
-    }
-
     function onError(message) {
-         setError(typeof message === 'string' ? message : message.message);
+         const nextMessage = typeof message === 'string' ? message : message.message;
+         setError(nextMessage);
+
+         if (nextMessage === 'Room closed') {
+           resetRoom();
+         }
+
          setTimeout(() => setError(null), 3000);
     }
 
@@ -49,8 +51,6 @@ function App() {
     socket.on('sync-update', onSyncUpdate);
     
     socket.on('error', onError);
-    socket.on('connect_error', onConnectError);
-
     socket.connect();
 
     return () => {
@@ -60,10 +60,9 @@ function App() {
       socket.off('playlist-update', onPlaylistUpdate);
       socket.off('sync-update', onSyncUpdate);
       socket.off('error', onError);
-      socket.off('connect_error', onConnectError);
       socket.disconnect();
     };
-  }, [setRoomId, setRoomState, setUserId]);
+  }, [resetRoom, setRoomId, setRoomState, setUserId]);
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white">

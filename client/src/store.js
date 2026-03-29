@@ -12,4 +12,9 @@ export const useStore = create((set) => ({
   setUserId: (id) => set({ userId: id }),
   currentPage: 'landing',
   setCurrentPage: (page) => set({ currentPage: page }),
+  resetRoom: () =>
+    set({
+      roomId: null,
+      roomState: null,
+    }),
 }));

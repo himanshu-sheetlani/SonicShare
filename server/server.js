@@ -1,12 +1,18 @@
 require("dotenv").config();
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
 const cors = require("cors");
-const path = require("path");
 const multer = require("multer");
-const socketHandler = require("./src/controllers/socket.controller");
 const { uploadSong, getSongsFromFirestore, deleteSong, getSongById } = require("./src/controllers/upload.controller");
+const {
+  createRoom,
+  joinRoom,
+  leaveRoom,
+  getRoom,
+  heartbeat,
+  updateRoomState,
+  postSignal,
+  getSignals,
+} = require("./src/controllers/room.controller");
 
 const app = express();
 app.use(cors());
@@ -35,18 +41,17 @@ app.get("/api/firestore-songs/:songId", getSongById);
 // Delete song from Firestore and Cloud Storage
 app.delete("/api/songs/:songId", deleteSong);
 
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
-
-// Initialize socket logic
-socketHandler(io);
+// Room lifecycle and WebRTC signaling
+app.post("/api/rooms", createRoom);
+app.post("/api/rooms/:roomId/join", joinRoom);
+app.post("/api/rooms/:roomId/leave", leaveRoom);
+app.get("/api/rooms/:roomId", getRoom);
+app.post("/api/rooms/:roomId/heartbeat", heartbeat);
+app.post("/api/rooms/:roomId/state", updateRoomState);
+app.post("/api/rooms/:roomId/signals", postSignal);
+app.get("/api/rooms/:roomId/signals", getSignals);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

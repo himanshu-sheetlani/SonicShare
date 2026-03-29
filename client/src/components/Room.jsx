@@ -1,11 +1,17 @@
 import { useStore } from '../store';
 import { socket } from '../socket';
-import { Copy, Disc } from 'lucide-react';
+import { Copy, Disc, ArrowLeft } from 'lucide-react';
 import { Player } from './Player';
 import { SongsList } from './SongsList';
 
 export function Room() {
-    const { roomId, roomState } = useStore();
+    const { roomId, roomState, resetRoom, setCurrentPage } = useStore();
+
+    const handleLeaveRoom = async () => {
+        await socket.leaveRoom();
+        resetRoom();
+        setCurrentPage('landing');
+    };
     
     return (
         <div className="relative w-full flex flex-col min-h-screen overflow-hidden bg-[#07111f] text-white">
@@ -13,9 +19,18 @@ export function Room() {
 
             {/* Header with Logo */}
             <div className="relative z-10 px-4 md:px-6 py-4 md:py-5 border-b border-white/10 bg-[#08111d]/70 backdrop-blur-sm">
-                <div className="flex items-center gap-3 max-w-[1800px] mx-auto">
-                    <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-8 md:h-10 object-contain" />
-                    <span className="text-lg md:text-xl font-bold text-white">SonicShare</span>
+                <div className="flex items-center justify-between gap-3 max-w-[1800px] mx-auto">
+                    <div className="flex items-center gap-3">
+                        <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-8 md:h-10 object-contain" />
+                        <span className="text-lg md:text-xl font-bold text-white">SonicShare</span>
+                    </div>
+                    <button
+                        onClick={handleLeaveRoom}
+                        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/6 px-4 py-2 text-sm text-white/75 transition hover:bg-white/10 hover:text-white"
+                    >
+                        <ArrowLeft size={16} />
+                        Leave room
+                    </button>
                 </div>
             </div>
 
