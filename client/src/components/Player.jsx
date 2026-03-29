@@ -189,9 +189,9 @@ export function Player() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 rounded-2xl p-5 border border-neutral-700/50 shadow-2xl">
+    <div className="flex flex-col items-center w-full h-full bg-gradient-to-br from-[#0a1422] via-[#0f1b2d] to-[#0a1422] rounded-2xl p-5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
       {/* Album Art Container */}
-      <div className="w-full mb-5 rounded-xl overflow-hidden shadow-xl border border-neutral-600/30">
+      <div className="w-full mb-5 rounded-xl overflow-hidden shadow-xl border border-white/10">
         {roomState?.currentSong?.albumArt ? (
           <img
             src={roomState.currentSong.albumArt}
@@ -199,7 +199,7 @@ export function Player() {
             className="w-full aspect-square object-cover"
           />
         ) : (
-          <div className="w-full aspect-square bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+          <div className="w-full aspect-square bg-gradient-to-br from-[#12335f] via-[#184a8d] to-[#2dbf67] flex items-center justify-center">
             <Music size={80} className="text-white/40" />
           </div>
         )}
@@ -210,13 +210,13 @@ export function Player() {
         <h3 className="text-lg font-bold text-white truncate mb-1">
           {roomState?.currentSong?.title || "No song"}
         </h3>
-        <p className="text-sm text-neutral-400 truncate">
+        <p className="text-sm text-white/55 truncate">
           {roomState?.currentSong?.artist || "Unknown Artist"}
         </p>
       </div>
 
       {/* Time Display */}
-      <div className="flex justify-between items-center w-full text-xs font-mono text-neutral-400 mb-3 px-1">
+      <div className="flex justify-between items-center w-full text-xs font-mono text-white/45 mb-3 px-1">
         <span>{formatTime(currentTime)}</span>
         <span>{formatTime(duration)}</span>
       </div>
@@ -237,9 +237,9 @@ export function Player() {
             className="absolute w-full h-full opacity-0 z-10 cursor-pointer"
             disabled={!roomState?.currentSong}
           />
-          <div className="w-full h-2 bg-neutral-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-500 transition-all duration-100 ease-linear rounded-full shadow-lg shadow-indigo-500/50"
+              className="h-full bg-gradient-to-r from-[#2d7cf6] via-[#56e084] to-[#34d266] transition-all duration-100 ease-linear rounded-full shadow-lg shadow-[#34d266]/35"
               style={{
                 width: `${duration ? (currentTime / duration) * 100 : 0}%`,
               }}
@@ -254,7 +254,7 @@ export function Player() {
           <div className="flex items-center gap-1.5 flex-shrink-0 group">
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="text-neutral-400 hover:text-indigo-400 transition-all p-1 flex-shrink-0"
+              className="text-white/50 hover:text-[#56e084] transition-all p-1 flex-shrink-0"
             >
               {isMuted || volume === 0 ? (
                 <VolumeX size={20} />
@@ -271,7 +271,7 @@ export function Player() {
                 step="0.01"
                 value={volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-25 h-1.5 bg-neutral-700 rounded-full appearance-none cursor-pointer accent-indigo-500"
+                className="w-25 h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#34d266]"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ export function Player() {
           <button
             onClick={() => skip("previous")}
             disabled={!roomState?.currentSong}
-            className="p-2 text-neutral-400 hover:text-indigo-400 transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
+            className="p-2 text-white/45 hover:text-[#56e084] transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
             title="Previous"
           >
             <SkipBack size={24} strokeWidth={1.5} />
@@ -290,7 +290,7 @@ export function Player() {
           <button
             onClick={togglePlay}
             disabled={!roomState?.currentSong}
-            className="p-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-full hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 transition-all disabled:opacity-30 disabled:scale-100 disabled:cursor-not-allowed shadow-xl shadow-indigo-500/30"
+            className="p-4 bg-gradient-to-r from-[#34d266] to-[#2d7cf6] text-white rounded-full hover:scale-110 hover:shadow-lg hover:shadow-[#34d266]/35 transition-all disabled:opacity-30 disabled:scale-100 disabled:cursor-not-allowed shadow-xl shadow-[#2d7cf6]/20"
           >
             {roomState?.playbackState === "playing" ? (
               <Pause fill="white" size={28} />
@@ -302,7 +302,7 @@ export function Player() {
           <button
             onClick={() => skip("next")}
             disabled={!roomState?.currentSong}
-            className="p-2 text-neutral-400 hover:text-indigo-400 transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
+            className="p-2 text-white/45 hover:text-[#56e084] transition-all hover:scale-110 disabled:opacity-20 disabled:hover:scale-100"
             title="Next"
           >
             <SkipForward size={24} strokeWidth={1.5} />

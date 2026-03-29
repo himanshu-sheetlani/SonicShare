@@ -27,7 +27,7 @@ export function LandingPage({ error }) {
       <div className="absolute inset-x-0 bottom-0 h-[55vh] bg-[radial-gradient(circle_at_center,_rgba(63,255,147,0.2),_transparent_48%)] blur-3xl" />
       <div
         className="absolute inset-0 z-0 bg-cover bg-bottom bg-no-repeat"
-        style={{ backgroundImage: "url('/bg_image.png')" }}
+        style={{ backgroundImage: "url('/bg_image.webp')" }}
       />
       <div className="absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(7,17,31,0.08)_0%,rgba(7,17,31,0.03)_42%,rgba(7,17,31,0.64)_82%,rgba(7,17,31,0.9)_100%)]" />
 

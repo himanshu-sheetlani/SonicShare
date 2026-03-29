@@ -1,32 +1,20 @@
 import React, { useState } from "react";
-import {
-  Upload,
-  Loader,
-  AlertCircle,
-  CheckCircle,
-  X,
-  Edit2,
-  Edit2Icon,
-} from "lucide-react";
+import { Upload, Loader, AlertCircle, CheckCircle, X, Edit2 } from "lucide-react";
 import { uploadSongToFirestore } from "../utils/firestoreService";
 import EditSongModal from "./EditSongModal";
 
-// Component for bulk uploading songs to Cloudinary via backend API
 export default function SongUploadForm({ onUploadSuccess }) {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
-  const [uploadedSongs, setUploadedSongs] = useState({}); // Map of index -> song data
+  const [uploadedSongs, setUploadedSongs] = useState({});
   const [message, setMessage] = useState({ text: "", type: "" });
   const [editingSongIndex, setEditingSongIndex] = useState(null);
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length > 0) {
-      // Only add audio files
-      const audioFiles = selectedFiles.filter((f) =>
-        f.type.startsWith("audio/"),
-      );
+      const audioFiles = selectedFiles.filter((f) => f.type.startsWith("audio/"));
       setFiles((prev) => [...prev, ...audioFiles]);
       setMessage({ text: "", type: "" });
     }
@@ -34,9 +22,9 @@ export default function SongUploadForm({ onUploadSuccess }) {
 
   const handleRemoveFile = (index) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
-    const newUploaded = { ...uploadedSongs };
-    delete newUploaded[index];
-    setUploadedSongs(newUploaded);
+    const nextUploadedSongs = { ...uploadedSongs };
+    delete nextUploadedSongs[index];
+    setUploadedSongs(nextUploadedSongs);
   };
 
   const handleUpload = async (e) => {
@@ -53,11 +41,10 @@ export default function SongUploadForm({ onUploadSuccess }) {
     setUploading(true);
     setMessage({ text: "", type: "" });
     const progress = {};
-
     let successCount = 0;
     let errorCount = 0;
 
-    for (let i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i += 1) {
       const file = files[i];
       progress[i] = "uploading";
       setUploadProgress({ ...progress });
@@ -69,10 +56,10 @@ export default function SongUploadForm({ onUploadSuccess }) {
           ...prev,
           [i]: response,
         }));
-        successCount++;
+        successCount += 1;
       } catch (error) {
         progress[i] = "error";
-        errorCount++;
+        errorCount += 1;
         console.error(`Failed to upload ${file.name}:`, error);
       }
 
@@ -112,46 +99,44 @@ export default function SongUploadForm({ onUploadSuccess }) {
   };
 
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 md:p-8 shadow-xl">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-500/10 rounded-lg">
-          <Upload className="w-5 h-5 text-blue-400" />
+    <div className="bg-[#0c1728]/88 border border-white/10 rounded-3xl p-6 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="rounded-lg border border-[#34d266]/20 bg-[#34d266]/10 p-2">
+          <Upload className="h-5 w-5 text-[#56e084]" />
         </div>
-        <h2 className="text-lg font-semibold">Upload Songs</h2>
+        <h2 className="text-lg font-semibold text-white">Upload Songs</h2>
       </div>
 
       <form onSubmit={handleUpload} className="space-y-5">
-        {/* File Upload Area */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-neutral-400 block">
+          <label className="block text-sm font-medium text-white/60">
             Select Audio Files
           </label>
-          <div className="relative border-2 border-dashed border-neutral-800 rounded-xl px-4 py-12 text-center hover:border-neutral-700 transition-colors bg-neutral-950 cursor-pointer">
+          <div className="relative cursor-pointer rounded-2xl border-2 border-dashed border-white/10 bg-[#08111d]/85 px-4 py-12 text-center transition-colors hover:border-[#34d266]/40">
             <input
               type="file"
               multiple
               accept="audio/*"
               onChange={handleFileChange}
               disabled={uploading}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
             />
-            <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
-              <Upload className="w-10 h-10 text-neutral-500" />
-              <span className="font-medium text-neutral-300">
-                Click to browse or drag & drop
+            <div className="pointer-events-none flex flex-col items-center justify-center gap-2">
+              <Upload className="h-10 w-10 text-[#56e084]" />
+              <span className="font-medium text-white/85">
+                Click to browse or drag and drop
               </span>
-              <span className="text-xs text-neutral-500">
-                MP3, WAV • Max 50MB per file
+              <span className="text-xs text-white/40">
+                MP3, WAV, max 50MB per file
               </span>
             </div>
           </div>
         </div>
 
-        {/* Selected Files List */}
         {files.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-neutral-400">
+              <label className="text-sm font-medium text-white/60">
                 Selected Files ({files.length})
               </label>
               <button
@@ -160,58 +145,57 @@ export default function SongUploadForm({ onUploadSuccess }) {
                   setFiles([]);
                   setUploadedSongs({});
                 }}
-                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+                className="text-xs text-white/45 transition-colors hover:text-white/75"
               >
                 Clear all
               </button>
             </div>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+
+            <div className="max-h-64 space-y-2 overflow-y-auto">
               {files.map((file, index) => (
                 <div
-                  key={index}
-                  className="flex items-center justify-between gap-3 bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2"
+                  key={`${file.name}-${index}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#08111d]/85 px-3 py-2"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-neutral-200 truncate">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-neutral-500">
+                    <p className="truncate text-sm text-white">{file.name}</p>
+                    <p className="text-xs text-white/40">
                       {(file.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
                   </div>
 
                   {uploadProgress[index] ? (
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex shrink-0 items-center gap-2">
                       {uploadProgress[index] === "uploading" && (
-                        <Loader className="w-4 h-4 text-blue-400 animate-spin" />
+                        <Loader className="h-4 w-4 animate-spin text-[#56e084]" />
                       )}
                       {uploadProgress[index] === "success" && (
-                        <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
+                        <CheckCircle className="h-5 w-5 shrink-0 text-green-400" />
                       )}
                       {uploadProgress[index] === "error" && (
-                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                        <AlertCircle className="h-4 w-4 shrink-0 text-red-400" />
                       )}
                     </div>
                   ) : (
-                    <>
+                    <div className="flex shrink-0 items-center gap-1">
                       <button
                         type="button"
                         onClick={() => handleRemoveFile(index)}
                         disabled={uploading}
-                        className="text-neutral-500 hover:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                        className="text-white/40 transition-colors hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditingSongIndex(index)}
                         disabled={uploading}
-                        className="p-1 text-neutral-400 hover:text-blue-400 hover:bg-neutral-900 rounded transition-colors disabled:opacity-50"
+                        className="rounded p-1 text-white/50 transition-colors hover:bg-white/8 hover:text-[#56e084] disabled:opacity-50"
                         title="Edit metadata"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
-                    </>
+                    </div>
                   )}
                 </div>
               ))}
@@ -219,44 +203,38 @@ export default function SongUploadForm({ onUploadSuccess }) {
           </div>
         )}
 
-        {/* Status Message */}
         {message.text && (
           <div
-            className={`p-4 rounded-xl flex items-center gap-3 text-sm ${
+            className={`flex items-center gap-3 rounded-xl border p-4 text-sm ${
               message.type === "error"
-                ? "bg-red-500/10 text-red-500 border border-red-500/20"
-                : "bg-green-500/10 text-green-400 border border-green-500/20"
+                ? "border-red-500/20 bg-red-500/10 text-red-300"
+                : "border-green-500/20 bg-green-500/10 text-green-300"
             }`}
           >
             {message.type === "error" ? (
-              <AlertCircle className="w-5 h-5 shrink-0" />
+              <AlertCircle className="h-5 w-5 shrink-0" />
             ) : (
-              <CheckCircle className="w-5 h-5 shrink-0" />
+              <CheckCircle className="h-5 w-5 shrink-0" />
             )}
             {message.text}
           </div>
         )}
 
-        {/* Upload Button */}
         {files.length > 0 && files.some((_, i) => uploadProgress[i] !== "success") && (
           <button
-n            type="submit"
+            type="submit"
             disabled={uploading || files.length === 0}
-            className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#34d266] to-[#2d7cf6] px-4 py-3 font-medium text-white shadow-[0_18px_45px_rgba(52,210,102,0.18)] transition-colors hover:brightness-110 disabled:cursor-not-allowed disabled:bg-white/8 disabled:text-white/35"
           >
             {uploading ? (
               <>
-                <Loader className="w-5 h-5 animate-spin" />
-                Uploading{" "}
-                {
-                  Object.values(uploadProgress).filter((p) => p === "uploading")
-                    .length
-                }
+                <Loader className="h-5 w-5 animate-spin" />
+                Uploading {Object.values(uploadProgress).filter((p) => p === "uploading").length}
                 /{files.length}...
               </>
             ) : (
               <>
-                <Upload className="w-5 h-5" />
+                <Upload className="h-5 w-5" />
                 Upload {files.length} File{files.length !== 1 ? "s" : ""}
               </>
             )}
@@ -264,14 +242,11 @@ n            type="submit"
         )}
       </form>
 
-      {/* Edit Modal for uploaded song */}
       {editingSongIndex !== null && uploadedSongs[editingSongIndex] && (
         <EditSongModal
           song={uploadedSongs[editingSongIndex]}
           onClose={() => setEditingSongIndex(null)}
-          onSave={(updatedSong) =>
-            handleSongUpdated(editingSongIndex, updatedSong)
-          }
+          onSave={(updatedSong) => handleSongUpdated(editingSongIndex, updatedSong)}
         />
       )}
     </div>

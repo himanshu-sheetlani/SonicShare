@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Edit2, Loader } from "lucide-react";
+import EditSongModal from "./EditSongModal";
 
 export default function UploadedSongsList() {
   const [songs, setSongs] = useState([]);
@@ -50,9 +51,9 @@ export default function UploadedSongsList() {
   };
 
   if (loading) {
-    return (
+      return (
       <div className="flex items-center justify-center py-12">
-        <Loader className="w-8 h-8 text-blue-400 animate-spin" />
+        <Loader className="w-8 h-8 text-[#56e084] animate-spin" />
       </div>
     );
   }
@@ -73,21 +74,21 @@ export default function UploadedSongsList() {
           {songs.map((song) => (
             <div
               key={song.id}
-              className="bg-neutral-950 border border-neutral-800 rounded-lg p-4 hover:border-neutral-700 transition-colors"
+              className="rounded-xl border border-white/10 bg-[#08111d]/85 p-4 transition-colors hover:border-[#34d266]/20"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <h4 className="text-white font-medium truncate">
                     {song.title || "Untitled"}
                   </h4>
-                  <p className="text-sm text-neutral-400 truncate">
+                  <p className="text-sm text-white/55 truncate">
                     {song.artist || "Unknown Artist"}
                   </p>
-                  <p className="text-xs text-neutral-500 mt-1">
+                  <p className="text-xs text-white/40 mt-1">
                     {song.genre && `Genre: ${song.genre}`}
                   </p>
                   {song.uploadedAt && (
-                    <p className="text-xs text-neutral-600 mt-1">
+                    <p className="text-xs text-white/30 mt-1">
                       {new Date(song.uploadedAt).toLocaleDateString()}
                     </p>
                   )}
@@ -96,14 +97,14 @@ export default function UploadedSongsList() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setEditingSong(song)}
-                    className="p-2 text-neutral-400 hover:text-blue-400 hover:bg-neutral-900 rounded-lg transition-colors"
+                    className="rounded-lg p-2 text-white/50 transition-colors hover:bg-white/8 hover:text-[#56e084]"
                     title="Edit song"
                   >
                     <Edit2 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteSong(song.id)}
-                    className="p-2 text-neutral-400 hover:text-red-400 hover:bg-neutral-900 rounded-lg transition-colors"
+                    className="rounded-lg p-2 text-white/50 transition-colors hover:bg-red-500/10 hover:text-red-300"
                     title="Delete song"
                   >
                     <Trash2 className="w-5 h-5" />

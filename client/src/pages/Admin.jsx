@@ -49,34 +49,35 @@ export default function Admin() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
-        <Loader className="w-8 h-8 text-neutral-400 animate-spin" />
+      <div className="min-h-screen bg-[#07111f] flex items-center justify-center">
+        <Loader className="w-8 h-8 text-[#56e084] animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center p-4">
+      <div className="relative min-h-screen overflow-hidden bg-[#07111f] text-white flex flex-col items-center justify-center p-4">
+        {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(36,110,255,0.24),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(52,210,102,0.16),_transparent_34%),linear-gradient(180deg,_#101c31_0%,_#09111d_58%,_#07111f_100%)]" /> */}
         <button
           onClick={() => {
             setRoomId(null);
             setCurrentPage('landing');
           }}
-          className="absolute top-4 left-4 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white"
+          className="absolute top-4 left-4 z-10 p-2 hover:bg-white/10 rounded-lg transition-colors text-white/55 hover:text-white"
           title="Back to Home"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="max-w-md w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-8 shadow-2xl text-center">
+        <div className="relative z-10 max-w-md w-full bg-[#0c1728]/88 border border-white/10 rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl text-center">
           <h1 className="text-2xl font-bold mb-2">Admin Portal</h1>
-          <p className="text-neutral-400 mb-8">
+          <p className="text-white/60 mb-8">
             Sign in with Google to access the admin panel.
           </p>
 
           <button
             onClick={handleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white text-neutral-900 font-semibold py-3 px-4 rounded-xl hover:bg-neutral-200 transition-colors"
+            className="w-full flex items-center justify-center gap-3 bg-white text-black font-semibold py-3 px-4 rounded-xl hover:brightness-110 transition-colors shadow-[0px_0px_25px_rgba(255,255,255,0.2)]"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -105,29 +106,30 @@ export default function Admin() {
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center p-4">
+      <div className="relative min-h-screen overflow-hidden bg-[#07111f] text-white flex flex-col items-center justify-center p-4">
+        {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(36,110,255,0.24),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(52,210,102,0.16),_transparent_34%),linear-gradient(180deg,_#101c31_0%,_#09111d_58%,_#07111f_100%)]" /> */}
         <button
           onClick={() => {
             setRoomId(null);
             setCurrentPage('landing');
           }}
-          className="absolute top-4 left-4 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white"
+          className="absolute top-4 left-4 z-10 p-2 hover:bg-white/10 rounded-lg transition-colors text-white/55 hover:text-white"
           title="Back to Home"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="max-w-md w-full bg-neutral-900 border border-red-800 rounded-2xl p-8 shadow-2xl text-center">
+        <div className="relative z-10 max-w-md w-full bg-[#0c1728]/88 border border-red-500/20 rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl text-center">
           <h1 className="text-2xl font-bold mb-2 text-red-400">Access Denied</h1>
-          <p className="text-neutral-400 mb-2">
+          <p className="text-white/60 mb-2">
             Your email is not authorized to access the admin panel.
           </p>
-          <p className="text-neutral-500 text-sm mb-8">
+          <p className="text-white/40 text-sm mb-8">
             Logged in as: <span className="font-semibold">{user?.email}</span>
           </p>
           <div className="flex gap-3">
             <button
               onClick={handleLogout}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+              className="flex-1 bg-gradient-to-r from-[#34d266] to-[#2d7cf6] hover:brightness-110 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
             >
               Try Another Email
             </button>
@@ -136,7 +138,7 @@ export default function Admin() {
                 setRoomId(null);
                 setCurrentPage('landing');
               }}
-              className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+              className="flex-1 bg-white/6 hover:bg-white/10 border border-white/10 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
             >
               Go Back
             </button>
@@ -147,9 +149,10 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
+    <div className="relative min-h-screen overflow-hidden bg-[#07111f] text-white flex flex-col">
+      {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(36,110,255,0.24),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(52,210,102,0.16),_transparent_34%),linear-gradient(180deg,_#101c31_0%,_#09111d_58%,_#07111f_100%)]" /> */}
       {/* Header with Logo */}
-      <div className="px-4 md:px-6 py-4 md:py-5 border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-sm">
+      <div className="relative z-10 px-4 md:px-6 py-4 md:py-5 border-b border-white/10 bg-[#08111d]/70 backdrop-blur-sm">
         <div className="flex items-center justify-between max-w-[1800px] mx-auto">
           <div className="flex items-center gap-3">
             <img src="/SonicShare_logo-TransparentBG.png" alt="SonicShare" className="h-8 md:h-10 object-contain" />
@@ -157,7 +160,7 @@ export default function Admin() {
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-lg transition-colors border border-red-500/20"
+            className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-300 rounded-lg transition-colors border border-red-500/20"
             title="Logout"
           >
             <LogOut className="w-5 h-5" />
@@ -167,13 +170,13 @@ export default function Admin() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8">
+      <div className="relative z-10 flex-1 p-4 md:p-8">
         <button
           onClick={() => {
             setRoomId(null);
             setCurrentPage('landing');
           }}
-          className="mb-8 p-2 hover:bg-neutral-900 rounded-lg transition-colors text-neutral-400 hover:text-white inline-flex items-center gap-2"
+          className="mb-8 p-2 hover:bg-white/10 rounded-lg transition-colors text-white/55 hover:text-white inline-flex items-center gap-2"
           title="Back to Home"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -182,7 +185,7 @@ export default function Admin() {
 
         <div className="max-w-3xl mx-auto">
           {/* User Info */}
-          <div className="flex items-center justify-between mb-12 pb-6 border-b border-neutral-800">
+          <div className="flex items-center justify-between mb-12 pb-6 border-b border-white/10">
             <div className="flex items-center gap-4">
               {user.photoURL && (
                 <img
@@ -193,7 +196,7 @@ export default function Admin() {
               )}
               <div>
                 <h1 className="text-3xl font-bold">{user.displayName}</h1>
-                <p className="text-neutral-400 text-sm">{user.email}</p>
+                <p className="text-white/60 text-sm">{user.email}</p>
               </div>
             </div>
           </div>

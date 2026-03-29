@@ -56,15 +56,15 @@ export default function EditSongModal({ song, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full max-h-96 flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#02060d]/72 p-4 backdrop-blur-sm">
+      <div className="max-h-96 w-full max-w-md flex flex-col rounded-3xl border border-white/10 bg-[#0c1728]/95 shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800">
+        <div className="flex items-center justify-between border-b border-white/10 p-6">
           <h2 className="text-xl font-semibold text-white">Edit Song</h2>
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-neutral-400 hover:text-white disabled:opacity-50 transition-colors"
+            className="text-white/50 hover:text-white disabled:opacity-50 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -82,14 +82,14 @@ export default function EditSongModal({ song, onClose, onSave }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={loading}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              className="w-full rounded-lg border border-white/10 bg-[#08111d] px-3 py-2 text-white placeholder:text-white/25 focus:border-[#34d266]/40 focus:outline-none disabled:opacity-50"
               placeholder="Song title"
             />
           </div>
 
           {/* Artist */}
           <div>
-            <label className="text-sm font-medium text-neutral-300 block mb-2">
+            <label className="text-sm font-medium text-white/75 block mb-2">
               Artist Name
             </label>
             <input
@@ -97,14 +97,14 @@ export default function EditSongModal({ song, onClose, onSave }) {
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
               disabled={loading}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              className="w-full rounded-lg border border-white/10 bg-[#08111d] px-3 py-2 text-white placeholder:text-white/25 focus:border-[#34d266]/40 focus:outline-none disabled:opacity-50"
               placeholder="Artist name"
             />
           </div>
 
           {/* Genre */}
           <div>
-            <label className="text-sm font-medium text-neutral-300 block mb-2">
+            <label className="text-sm font-medium text-white/75 block mb-2">
               Genre
             </label>
             <input
@@ -112,14 +112,14 @@ export default function EditSongModal({ song, onClose, onSave }) {
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
               disabled={loading}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              className="w-full rounded-lg border border-white/10 bg-[#08111d] px-3 py-2 text-white placeholder:text-white/25 focus:border-[#34d266]/40 focus:outline-none disabled:opacity-50"
               placeholder="Genre"
             />
           </div>
 
           {/* Album */}
           <div>
-            <label className="text-sm font-medium text-neutral-300 block mb-2">
+            <label className="text-sm font-medium text-white/75 block mb-2">
               Album
             </label>
             <input
@@ -127,7 +127,7 @@ export default function EditSongModal({ song, onClose, onSave }) {
               value={album}
               onChange={(e) => setAlbum(e.target.value)}
               disabled={loading}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              className="w-full rounded-lg border border-white/10 bg-[#08111d] px-3 py-2 text-white placeholder:text-white/25 focus:border-[#34d266]/40 focus:outline-none disabled:opacity-50"
               placeholder="Album name"
             />
           </div>
@@ -135,7 +135,7 @@ export default function EditSongModal({ song, onClose, onSave }) {
           {/* Cloudinary URL */}
           {song.cloudinaryUrl && (
             <div>
-              <label className="text-sm font-medium text-neutral-300 block mb-2">
+              <label className="text-sm font-medium text-white/75 block mb-2">
                 Stream URL
               </label>
               <div className="flex items-center gap-2">
@@ -143,19 +143,19 @@ export default function EditSongModal({ song, onClose, onSave }) {
                   type="text"
                   value={song.cloudinaryUrl}
                   disabled
-                  className="flex-1 bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-neutral-500 text-xs truncate"
+                  className="flex-1 rounded-lg border border-white/10 bg-[#08111d] px-3 py-2 text-xs text-white/35 truncate"
                 />
                 <button
                   type="button"
                   onClick={handleCopyUrl}
                   disabled={loading}
-                  className="p-2 bg-neutral-950 border border-neutral-800 hover:border-neutral-700 rounded-lg transition-colors disabled:opacity-50"
+                  className="rounded-lg border border-white/10 bg-[#08111d] p-2 transition-colors hover:border-[#34d266]/30 disabled:opacity-50"
                   title="Copy URL"
                 >
                   {copied ? (
                     <Check className="w-4 h-4 text-green-400" />
                   ) : (
-                    <Copy className="w-4 h-4 text-neutral-400" />
+                    <Copy className="w-4 h-4 text-white/45" />
                   )}
                 </button>
               </div>
@@ -177,19 +177,19 @@ export default function EditSongModal({ song, onClose, onSave }) {
         </form>
 
         {/* Footer */}
-        <div className="flex gap-2 p-6 border-t border-neutral-800 bg-neutral-950">
+        <div className="flex gap-2 border-t border-white/10 bg-[#08111d]/70 p-6">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 border border-neutral-700 hover:border-neutral-600 disabled:border-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed text-neutral-300 font-medium py-2 px-4 rounded-lg transition-colors"
+            className="flex-1 rounded-lg border border-white/10 px-4 py-2 font-medium text-white/75 transition-colors hover:bg-white/6 disabled:cursor-not-allowed disabled:text-white/25"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#34d266] to-[#2d7cf6] px-4 py-2 font-medium text-white transition-colors hover:brightness-110 disabled:cursor-not-allowed disabled:bg-white/8 disabled:text-white/35"
           >
             {loading ? (
               <>
