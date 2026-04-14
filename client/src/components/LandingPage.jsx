@@ -41,18 +41,6 @@ export function LandingPage({ error }) {
           <span className="text-2xl font-semibold tracking-tight">SonicShare</span>
         </div>
 
-        <nav className="hidden items-center gap-8 text-sm text-white/80 xl:flex">
-          {navItems.map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="transition hover:text-white"
-              onClick={(e) => e.preventDefault()}
-            >
-              {item}
-            </a>
-          ))}
-        </nav>
       </header>
 
       <main className="relative z-10 flex h-[calc(100vh-92px)] flex-col items-center px-5 pb-[11rem] pt-6 text-center sm:px-8 md:pt-10 lg:px-14 lg:pb-[13rem]">
@@ -76,7 +64,7 @@ export function LandingPage({ error }) {
               className="inline-flex min-w-[200px] items-center justify-center gap-3 rounded-2xl bg-[#34d266] px-7 py-3.5 text-base font-semibold text-white shadow-[0_18px_45px_rgba(52,210,102,0.28)] transition hover:-translate-y-0.5 hover:brightness-110"
             >
               <Plus size={20} />
-              Start Free Now
+              Create Room
             </button>
 
             <form
